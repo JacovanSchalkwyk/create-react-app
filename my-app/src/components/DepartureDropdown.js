@@ -4,31 +4,26 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
-export default function DepartureSelect() {
+export default function DepartureSelect(props) {
   const [departure, setDestination] = React.useState('');
+  const [options, setOptions] = React.useState([]);
+
+  React.useEffect(() => {
+    fetch('http://localhost:8203/flights/airports/origins')
+      .then(response => response.json())
+      .then(data => {
+        setOptions(data);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  }, []);
 
   const handleChange = event => {
-    setDestination(event.target.value);
+    const selectedValue = event.target.value;
+    setDestination(selectedValue);
+    props.onChange(selectedValue);
   };
-
-  const options = [
-    {
-      label: 'Apple',
-      value: 'apple',
-    },
-    {
-      label: 'Mango',
-      value: 'mango',
-    },
-    {
-      label: 'Banana',
-      value: 'banana',
-    },
-    {
-      label: 'Pineapple',
-      value: 'pineapple',
-    },
-  ];
 
   return (
     <FormControl sx={{ m: 1, minWidth: 400, maxWidth: 600 }} size="small">
@@ -41,7 +36,9 @@ export default function DepartureSelect() {
         onChange={handleChange}
       >
         {options.map(option => (
-          <MenuItem value={option.value}>{option.label}</MenuItem>
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>
