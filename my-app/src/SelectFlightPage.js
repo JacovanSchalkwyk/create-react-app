@@ -1,7 +1,7 @@
 import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
-import { useEffect } from 'react';
 import * as React from 'react';
+import FlightList from './components/FlightList';
 class Flight {
   constructor(
     id,
@@ -41,6 +41,7 @@ class Flight {
         }),
       });
       const data = await response.json();
+      console.log('data:', data);
       return data;
     } catch (error) {
       console.error('Error fetching flights:', error);
@@ -55,9 +56,6 @@ export default function SelectFlightPage() {
   const departure = params.get('departure');
   const arrival = params.get('arrival');
   const date = params.get('date');
-  console.log(departure);
-  console.log(arrival);
-  console.log(date);
 
   const [flights, setFlights] = useState([]);
 
@@ -74,19 +72,7 @@ export default function SelectFlightPage() {
   return (
     <div>
       <h1>Available flights:</h1>
-      <ul>
-        {flights.map(flight => (
-          <li key={flight.id}>
-            <div>Flight Number: {flight.flightNumber}</div>
-            <div>Origin: {flight.origin}</div>
-            <div>Destination: {flight.destination}</div>
-            <div>Departure Time: {flight.departureTime}</div>
-            <div>Arrival Time: {flight.arrivalTime}</div>
-            <div>Seats Available: {flight.seatsAvailable}</div>
-            <div>Seat Cost: {flight.seatCost}</div>
-          </li>
-        ))}
-      </ul>
+      <FlightList flights={flights} />
     </div>
   );
 }
